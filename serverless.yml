@@ -1,0 +1,13 @@
+org: betalogika
+app: halokak-be-node
+service: halokak-be-node
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+
+functions:
+  hello:
+    handler: handler.hello
