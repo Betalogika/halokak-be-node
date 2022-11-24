@@ -20,5 +20,4 @@ plugins:
   - serverless-offline-scheduler
 
 functions:
-  hello:
-    handler: handler.hello
+  - ${file(app/example/example.serverless.yml)}
