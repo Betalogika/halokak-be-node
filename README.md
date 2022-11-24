@@ -1,72 +1,117 @@
-<!--
-title: 'AWS NodeJS Example'
-description: 'This template demonstrates how to deploy a NodeJS function running on AWS Lambda using the traditional Serverless Framework.'
-layout: Doc
-framework: v3
-platform: AWS
-language: nodeJS
-priority: 1
-authorLink: 'https://github.com/serverless'
-authorName: 'Serverless, inc.'
-authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
--->
+# Halo Kak Serverless
 
+This repository is used to build serverless functions to support and/or integrate Halo Kak App.
 
-# Serverless Framework AWS NodeJS Example
+**Important**: Please create .env.prod and env.dev to differentiate between deployment environment - see .env.example for reference
 
-This template demonstrates how to deploy a NodeJS function running on AWS Lambda using the traditional Serverless Framework. The deployed function does not include any event definitions as well as any kind of persistence (database). For more advanced configurations check out the [examples repo](https://github.com/serverless/examples/) which includes integrations with SQS, DynamoDB or examples of functions that are triggered in `cron`-like manner. For details about configuration of specific `events`, please refer to our [documentation](https://www.serverless.com/framework/docs/providers/aws/events/).
+Staging deployment: `npm run deploy:dev`
 
-## Usage
+Production deployment: `npm run deploy:prod`
 
-### Deployment
+To view the logs use `serverless logs -f <function_name> -s <dev/prod> -t`
 
-In order to deploy the example, you need to run the following command:
+Based on serverless framework typescript example
+
+---
+
+## Serverless Nodejs Rest API with TypeScript And MongoDB Atlas
+
+This is simple REST API example for AWS Lambda By Serverless framwork with TypeScript and MongoDB Atlas.
+
+## Use Cases
+
+* REST API with typescript
+* MongoDB Atlas data storage
+* Multi-environment management under Serverless
+* Mocha unit tests and lambda-tester interface test
+* AWS lambda function log view
+
+## Invoke the function locally
+
+```bash
+serverless invoke local --function find
+```
+
+Which should result in:
+
+```bash
+Serverless: Compiling with Typescript...
+Serverless: Using local tsconfig.json
+Serverless: Typescript compiled.
+
+{
+    "statusCode": 200,
+    "body": "{\"code\":0,\"message\":\"success\",\"data\":[{\"_id\":\"5dff21f71c9d440000a30dad\",\"createdAt\":\"2020-05-16T09:27:51.219Z\"},{\"_id\":\"5dff22ba1c9d440000a30dae\",\"createdAt\":\"2020-05-16T09:27:51.220Z\"}]}"
+}
+```
+
+## Deploy
+
+### To Test It Locally
+
+* Run ```npm install``` to install all the necessary dependencies.
+* Run ```npm run local``` use serverless offline to test locally. 
+
+### Deploy on AWS, simply run:
 
 ```
+$ npm run deploy:prod/dev
+
+# or
+
 $ serverless deploy
 ```
 
-After running deploy, you should see output similar to:
+The expected result should be similar to:
 
-```bash
-Deploying aws-node-project to stage dev (us-east-1)
-
-✔ Service deployed to stack aws-node-project-dev (112s)
-
+```
+Serverless: Compiling with Typescript...
+Serverless: Using local tsconfig.json
+Serverless: Typescript compiled.
+Serverless: Packaging service...
+Serverless: Excluding development dependencies...
+Serverless: Uploading CloudFormation file to S3...
+Serverless: Uploading artifacts...
+Serverless: Uploading service aws-node-rest-api-typescript.zip file to S3 (1.86 MB)...
+Serverless: Validating template...
+Serverless: Updating Stack...
+Serverless: Checking Stack update progress...
+......................................
+Serverless: Stack update finished...
+Service Information
+service: aws-node-rest-api-typescript
+stage: dev
+region: us-east-1
+stack: aws-node-rest-api-typescript-dev
+resources: 32
+api keys:
+  None
+endpoints:
+  POST - https://xxxxxxxxxxx.execute-api.us-east-1.amazonaws.com/dev/books
+  PUT - https://xxxxxxxxxxx.execute-api.us-east-1.amazonaws.com/dev/books/{id}
+  GET - https://xxxxxxxxxxx.execute-api.us-east-1.amazonaws.com/dev/books
+  GET - https://xxxxxxxxxxx.execute-api.us-east-1.amazonaws.com/dev/books/{id}
+  DELETE - https://xxxxxxxxxxx.execute-api.us-east-1.amazonaws.com/dev/books/{id}
 functions:
-  hello: aws-node-project-dev-hello (1.5 kB)
+  create: aws-node-rest-api-typescript-dev-create
+  update: aws-node-rest-api-typescript-dev-update
+  find: aws-node-rest-api-typescript-dev-find
+  findOne: aws-node-rest-api-typescript-dev-findOne
+  deleteOne: aws-node-rest-api-typescript-dev-deleteOne
+layers:
+  None
+Serverless: Removing old service artifacts from S3...
+Serverless: Run the "serverless" command to setup monitoring, troubleshooting and testing.
 ```
 
-### Invocation
+## Usage
 
-After successful deployment, you can invoke the deployed function by using the following command:
-
-```bash
-serverless invoke --function hello
-```
-
-Which should result in response similar to the following:
-
-```json
-{
-    "statusCode": 200,
-    "body": "{\n  \"message\": \"Go Serverless v3.0! Your function executed successfully!\",\n  \"input\": {}\n}"
-}
-```
-
-### Local development
-
-You can invoke your function locally by using the following command:
-
-```bash
-serverless invoke local --function hello
-```
-
-Which should result in response similar to the following:
+send an HTTP request directly to the endpoint using a tool like curl
 
 ```
-{
-    "statusCode": 200,
-    "body": "{\n  \"message\": \"Go Serverless v3.0! Your function executed successfully!\",\n  \"input\": \"\"\n}"
-}
+curl https://xxxxxxxxx.execute-api.us-east-1.amazonaws.com/dev/books
 ```
+
+## Scaling
+
+By default, AWS Lambda limits the total concurrent executions across all functions within a given region to 100. The default limit is a safety limit that protects you from costs due to potential runaway or recursive functions during initial development and testing. To increase this limit above the default, follow the steps in [To request a limit increase for concurrent executions](http://docs.aws.amazon.com/lambda/latest/dg/concurrent-executions.html#increase-concurrent-executions-limit).

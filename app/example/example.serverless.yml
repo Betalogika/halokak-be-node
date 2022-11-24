@@ -1,0 +1,18 @@
+getSomething:
+  handler: app/example/handler.getSomething
+  events:
+    - http:
+        path: example/get-something
+        method: get
+  environment:
+      API_KEY: ${env:API_KEY}
+      DB_URL: ${env:DB_URL}
+getSomethingList:
+  handler: app/example/handler.getSomethingList
+  events:
+    - http:
+        path: example/get-something-list
+        method: get
+  environment:
+      API_KEY: ${env:API_KEY}
+      DB_URL: ${env:DB_URL}

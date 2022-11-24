@@ -4,10 +4,20 @@ service: halokak-be-node
 
 frameworkVersion: '3'
 
+useDotenv: true
+
 provider:
   name: aws
   runtime: nodejs14.x
+  memorySize: 3008
+  timeout: 30
+  environment:
+    NODE_ENV: ${opt:stage, 'dev'}
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+  - serverless-offline-scheduler
 
 functions:
-  hello:
-    handler: handler.hello
+  - ${file(app/example/example.serverless.yml)}
