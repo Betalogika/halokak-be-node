@@ -1,0 +1,69 @@
+register:
+  handler: app/authentication/handler.register
+  events:
+    - http:
+        path: authentication/register
+        method: post
+        cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Origin
+              - Accept
+              - API_KEY
+              - api_key
+            allowCredentials: true
+  environment:
+      API_KEY: ${env:API_KEY}
+      DB_URL: ${env:DB_URL}
+login:
+  handler: app/authentication/handler.login
+  events:
+    - http:
+        path: authentication/login
+        method: post
+        cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Origin
+              - Accept
+              - API_KEY
+              - api_key
+            allowCredentials: true
+  environment:
+      API_KEY: ${env:API_KEY}
+      DB_URL: ${env:DB_URL}
+logout:
+  handler: app/authentication/handler.logout
+  events:
+    - http:
+        path: authentication/logout
+        method: post
+        cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Origin
+              - Accept
+              - API_KEY
+              - api_key
+            allowCredentials: true
+  environment:
+      API_KEY: ${env:API_KEY}
+      DB_URL: ${env:DB_URL}
