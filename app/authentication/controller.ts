@@ -54,11 +54,37 @@ export class AuthenticationController {
     if (!userData) {
       return MessageUtil.errorUnprocessable("Akun tidak ditemukan");
     }
-    const data = await this.repository.isPasswordMatch(userData.password, password);
-    if (!data) {
+    const isPasswordMatch = await this.repository.isPasswordMatch(userData.password, password);
+    if (!isPasswordMatch) {
       return MessageUtil.errorUnprocessable("Password salah");
     }
+    const data = await this.repository.generateToken(userData.id);
+    if (!data) {
+      return MessageUtil.errorUnprocessable("Generate Token tidak berhasil")
+    }
+    const access_token = await this.repository.getToken(userData.id);
+    userData["token"] = access_token.id;
     return MessageUtil.success(userData);
+  }
+
+  /**
+   * dev url: ""
+   * prod url: ""
+   */
+  async logout(event: any) {
+    //get body parameter
+    const params = JSON.parse(event.body);
+    //check parameter
+    if(!params) return MessageUtil.errorBadRequest();
+    const token = params.token;
+    if (!token) {
+      return MessageUtil.errorMandatory("token");
+    }
+    const data = await this.repository.logout(token);
+    if (!data) {
+      return MessageUtil.errorUnprocessable("Remove Token tidak berhasil")
+    }
+    return MessageUtil.success(data);
   }
 
   stringToBoolean(data: string){
