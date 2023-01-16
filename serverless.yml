@@ -22,3 +22,4 @@ plugins:
 functions:
   - ${file(app/example/example.serverless.yml)}
   - ${file(app/authentication/authentication.serverless.yml)}
+  - ${file(app/Mentor/Mentor.serverless.yml)}
