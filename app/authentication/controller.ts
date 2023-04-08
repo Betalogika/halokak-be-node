@@ -21,15 +21,21 @@ export class AuthenticationController {
     const password = params.password;
     const name = params.name;
     if (!email) {
-      return MessageUtil.errorMandatory("email");
+      return MessageUtil.errorMandatory("email")
     }
     if (!password) {
-      return MessageUtil.errorMandatory("password");
+      return MessageUtil.errorMandatory("password")
     }
     if (!name) {
-      return MessageUtil.errorMandatory("name");
+      return MessageUtil.errorMandatory("name")
     }
-    const data = await this.repository.register(email, password, name);
+    const isAnyDataMatch = await this.repository.getUser(email)
+    if (isAnyDataMatch) {
+      return MessageUtil.errorUnprocessable("Email telah terdaftar")
+    }
+    await this.repository.register(email, password, name)
+    const data = await this.repository.getUser(email)
+    delete data["password"]
     return MessageUtil.success(data);
   }
 

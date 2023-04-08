@@ -1,9 +1,8 @@
-import { use } from "chai";
 import { Connection } from "mongoose";
+import bcrypt from "bcryptjs";
+import mongoose from 'mongoose';
 
-const bcrypt = require("bcryptjs");
 const saltRounds = 10;
-const mongoose = require('mongoose');
 
 export class AuthenticationRepository {
   db: Connection;
@@ -20,23 +19,13 @@ export class AuthenticationRepository {
     //check db conneted or not
     if (!this.db) throw new Error("Database not connected.");
     //process your param
-    return bcrypt.genSalt(saltRounds, function (saltError, salt) {
-      if (saltError) {
-        return saltError
-      } else {
-        bcrypt.hash(password, salt, function(hashError, hash) {
-          if (hashError) {
-            return hashError
-          }
-          const params = {
-            email: email,
-            password: hash,
-            name: name
-          }
-          return this.db.collection('user').insertOne(params);
-        })
-      }
-    })
+    const hashPassword = await bcrypt.hash(password, saltRounds)
+    const params = {
+      "email": email,
+      "password": hashPassword,
+      "name": name
+    }
+    return this.db.collection('user').insertOne(params);
   }
 
   async getUser(
