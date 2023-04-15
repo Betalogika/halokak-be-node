@@ -25,6 +25,7 @@
         "mongoose": "^5.9.10",
         "mysql": "^2.18.1",
         "objection": "^3.0.1",
+        "rand-token": "^1.0.1",
         "serverless-plugin-ifelse": "^1.0.7"
     },
     "devDependencies": {

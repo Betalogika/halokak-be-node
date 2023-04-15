@@ -1,6 +1,6 @@
 import { Connection } from "mongoose";
 import bcrypt from "bcryptjs";
-import mongoose from 'mongoose';
+import { suid } from 'rand-token';
 
 const saltRounds = 10;
 
@@ -45,32 +45,28 @@ export class AuthenticationRepository {
     password: string,
     hash: string
   ) {
-    return bcrypt.compare(password, hash, function(error, isMatch) {
-      if (error) {
-        return false
-      } else if (!isMatch) {
-        return false
-      } else {
-        return true
-      }
-    });
+    return await bcrypt.compare(password, hash)
   }
 
   async generateToken(user_id: string) {
     //check db conneted or not
     if (!this.db) throw new Error("Database not connected.");
-    const params = {
-      created_at: Date(),
+    const matchParam = {
       user_id: user_id
-    };
-    return this.db.collection('access_tokens').insertOne(params);
+    }
+    const params = {
+      token: suid(16),
+      user_id: user_id,
+      created_at: new Date(),
+    }
+    return this.db.collection('access_tokens').updateOne(matchParam, { $set: params}, { upsert: true })
   }
 
   async getToken(user_id: string) {
     //check db conneted or not
     if (!this.db) throw new Error("Database not connected.");
     const matchParam = {
-      "user_id": user_id
+      user_id: user_id
     };
     return this.db.collection('access_tokens').findOne(matchParam);
   }
@@ -78,9 +74,8 @@ export class AuthenticationRepository {
   async logout(token: string) {
     //check db conneted or not
     if (!this.db) throw new Error("Database not connected.");
-    let objectId = new mongoose.Types.ObjectId(token);
     const matchParam = {
-      "_id": objectId
+      token: token
     };
     return this.db.collection('access_tokens').remove(matchParam);
   }

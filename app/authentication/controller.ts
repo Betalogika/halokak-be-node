@@ -60,17 +60,18 @@ export class AuthenticationController {
     if (!userData) {
       return MessageUtil.errorUnprocessable("Akun tidak ditemukan");
     }
-    const isPasswordMatch = await this.repository.isPasswordMatch(userData.password, password);
+    const isPasswordMatch = await this.repository.isPasswordMatch(password, userData.password);
     if (!isPasswordMatch) {
       return MessageUtil.errorUnprocessable("Password salah");
     }
-    const data = await this.repository.generateToken(userData.id);
+    const data = await this.repository.generateToken(userData._id);
     if (!data) {
       return MessageUtil.errorUnprocessable("Generate Token tidak berhasil")
     }
-    const access_token = await this.repository.getToken(userData.id);
-    userData["token"] = access_token.id;
-    return MessageUtil.success(userData);
+    const access_token = await this.repository.getToken(userData._id);
+    userData["token"] = access_token.token
+    delete userData['password']
+    return MessageUtil.success(userData)
   }
 
   /**
@@ -79,10 +80,8 @@ export class AuthenticationController {
    */
   async logout(event: any) {
     //get body parameter
-    const params = JSON.parse(event.body);
+    const token = event.headers.token
     //check parameter
-    if(!params) return MessageUtil.errorBadRequest();
-    const token = params.token;
     if (!token) {
       return MessageUtil.errorMandatory("token");
     }
@@ -90,7 +89,7 @@ export class AuthenticationController {
     if (!data) {
       return MessageUtil.errorUnprocessable("Remove Token tidak berhasil")
     }
-    return MessageUtil.success(data);
+    return MessageUtil.success(null)
   }
 
   stringToBoolean(data: string){
