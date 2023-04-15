@@ -47,5 +47,5 @@ export const login: Handler = async (event: any) => {
 export const logout: Handler = async (event: any) => {
   if(!initialized) await init();
   if(!authorized(event.headers)) return MessageUtil.error(401, "Unauthorized");
-  return controller.login(event);
+  return controller.logout(event);
 };
