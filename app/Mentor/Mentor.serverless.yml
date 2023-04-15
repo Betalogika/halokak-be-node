@@ -1,0 +1,9 @@
+getSomethingList:
+  handler: app/Mentor/Mentorhandler.getMentorList
+  events:
+    - http:
+        path: Mentor/get-Mentor-list
+        method: get
+  environment:
+      API_KEY: ${env:API_KEY}
+      DB_URL: ${env:DB_URL}
